@@ -422,7 +422,7 @@
         </div>
 
         <!-- Main CTA Button -->
-        <a id="telegramLink" href="https://t.me/+5NTlFzjNzF5jNjE1" class="cta-btn" onclick="trackEvents(event)">
+        <a id="telegramLink" href="https://t.me/+5NTlFzjNzF5jNjE1" class="cta-btn" onclick="trackButtonClick()">
             ✈️ मोफत Channel Join करा!
         </a>
         <div class="cta-note">
@@ -514,28 +514,33 @@
 
     </div>
 
-    <!-- SMART TRACKING WITH DELAYED REDIRECT -->
+    <!-- UPDATED TRACKING & REDIRECT SCRIPT -->
     <script>
-        function trackEvents(event) {
-            event.preventDefault(); // Browser ko turant open hone se rokta hai
-            var targetUrl = event.currentTarget.getAttribute('href');
+        var isClicked = false; 
+        var telegramUrl = "https://t.me/+5NTlFzjNzF5jNjE1"; 
 
-            try {
-                var isAlreadyTracked = localStorage.getItem('meta_lead_fired');
-                if (!isAlreadyTracked) {
-                    if (typeof fbq !== 'undefined') {
-                        fbq('track', 'Lead');
-                        localStorage.setItem('meta_lead_fired', 'true');
-                    }
+        function trackButtonClick() {
+            if (!isClicked) {
+                isClicked = true; 
+
+                // 1. Facebook Pixel Events
+                if (typeof fbq !== 'undefined') {
+                    fbq('trackCustom', 'TelegramBtnClick'); 
+                    fbq('track', 'Subscribe'); 
                 }
-            } catch (err) {
-                console.log("Tracking error logged.");
-            }
 
-            // 300ms delay to let Meta Pixel complete event tracking
-            setTimeout(function() {
-                window.open(targetUrl, '_blank');
-            }, 300);
+                // 2. Button Visual Disable
+                var btn = document.getElementById('telegramLink');
+                if (btn) {
+                    btn.style.pointerEvents = 'none'; 
+                    btn.style.opacity = '0.7';       
+                }
+
+                // 3. Telegram Redirect
+                setTimeout(function() {
+                    window.location.href = telegramUrl;
+                }, 300);
+            }
         }
     </script>
 
